@@ -3,9 +3,11 @@
  const { listingSchema, reviewSchema } = require("./schema.js");
  const Review = require('./models/review'); // update the path as needed
 
+ 
 
 module.exports.isLoggedIn = (req,res,next)=>{
    if(!req.isAuthenticated()){
+    console.log("Login Status:", req.isAuthenticated());
     req.session.redirectUrl = req.originalUrl;
     req.flash("error","You must be  logged in to create listing");
     return res.redirect("/login");

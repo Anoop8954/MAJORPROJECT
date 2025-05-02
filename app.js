@@ -44,14 +44,28 @@ app.use(express.static(path.join(__dirname,"/public")));
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
-    touchAfter: 24*3600,
+    touchAfter: 24 * 3600, // Set how often session should be refreshed
     crypto: {
         secret: process.env.SECRET
     }
 });
-store.on("error", function(e){
-    console.log("Session Store Error", e);
+
+// MongoStore error check
+store.on("error", (e) => {
+    console.log("Session Store Error:", e);
 });
+
+
+// const store = MongoStore.create({
+//     mongoUrl: dbUrl,
+//     touchAfter: 24*3600,
+//     crypto: {
+//         secret: process.env.SECRET
+//     }
+// });
+// store.on("error", function(e){
+//     console.log("Session Store Error", e);
+// });
 
 const sessionOption ={
     store: store,
@@ -64,13 +78,6 @@ const sessionOption ={
         httpOnly: true
     },
 };
-
-
-
-
-// app.get('/', (req, res) => {
-//     res.send("Root is working");
-// });
 
 app.use(session(sessionOption));
 app.use(flash());
@@ -101,7 +108,7 @@ app.use((req,res,next)=>{
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/",userRouter);
-
+ 
 app.all("*", (req, res, next) => {+
     next(new ExpressError("Page Not Found", 404));
 });
