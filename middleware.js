@@ -6,6 +6,9 @@
  
 
 module.exports.isLoggedIn = (req,res,next)=>{
+        console.log("Login Status:", req.isAuthenticated());
+        console.log("User:", req.user);
+
    if(!req.isAuthenticated()){
     console.log("Login Status:", req.isAuthenticated());
     req.session.redirectUrl = req.originalUrl;
