@@ -51,6 +51,9 @@ module.exports.createListing = async (req, res, next) => {
     await newListing.save();
     req.flash("success", "New listing created!");
     res.status(201).redirect("/listings");
+    console.log("✅ req.isAuthenticated():", req.isAuthenticated?.());
+    console.log("✅ req.user:", req.user);
+
 };
 
 
