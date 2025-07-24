@@ -28,36 +28,31 @@ module.exports.showListing = async (req, res) =>{
 };
 
 module.exports.createListing = async (req, res, next) => {
-let response = await geocodingClient.forwardGeocode({
+    const response = await geocodingClient.forwardGeocode({
         query: req.body.listing.location,
         limit: 1
-    })
-      .send()
+    }).send();
 
-    let url = req.file.path;
-    let filename = req.file.filename;
-    const { title, description, image, price, location, country } = req.body.listing;
+    const { title, description, price, location, country } = req.body.listing;
+    const url = req.file.path;
+    const filename = req.file.filename;
+
     const newListing = new Listing({
-            title,
-            description,
-            price,
-            location,
-            country,
-            image: {
-                url: image,
-                filename: "manual-upload"
-            }
-        });
-        newListing.owner = req.user._id;
-        newListing.image = {url,filename};
+        title,
+        description,
+        price,
+        location,
+        country,
+        image: { url, filename },
+        geometry: response.body.features[0].geometry,
+        owner: req.user._id
+    });
 
-        newListing.geometry = response.body.features[0].geometry;
-
-        let savedListing = await newListing.save();
-        console.log(savedListing);
-        req.flash("success","New listing created!");
-        res.status(201).redirect("/listings");
+    await newListing.save();
+    req.flash("success", "New listing created!");
+    res.status(201).redirect("/listings");
 };
+
 
 module.exports.editListing = async(req, res)=>{
     let {id} = req.params;
