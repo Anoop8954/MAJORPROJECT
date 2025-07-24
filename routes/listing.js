@@ -30,7 +30,7 @@ router.route("/:id")
 .put(isLoggedIn, 
     isOwner, 
     upload.single("listing[image]"),
-    // validateListing, 
+    validateListing, 
     wrapAsync(listingController.updateListing)
 );
 
