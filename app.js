@@ -53,16 +53,30 @@ store.on("error", function(e){
     console.log("Session Store Error", e);
 });
 
-const sessionOption ={
+if (process.env.NODE_ENV === "production") {
+    app.set('trust proxy', 1); // ✅ trust render’s proxy
+
+    app.use((req, res, next) => {
+        if (req.headers["x-forwarded-proto"] !== "https") {
+            return res.redirect("https://" + req.headers.host + req.url);
+        }
+        next();
+    });
+}
+
+
+const sessionOption = {
     store: store,
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie:{
-        expires: Date.now() + 7*24*60*60*1000,
-        maxAge: 7*24*60*60*1000,
-        httpOnly: true
-    },
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true,           // ✅ required for HTTPS (Render)
+        sameSite: "none"        // ✅ allow cross-site cookie sharing
+    }
 };
 
 
