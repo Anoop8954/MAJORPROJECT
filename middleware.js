@@ -2,9 +2,8 @@
  const ExpressError = require("./utils/ExpressError.js");
  const { listingSchema, reviewSchema } = require("./schema.js");
  const Review = require('./models/review'); // update the path as needed
-const jwt = require("jsonwebtoken");
-const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-res.json({ token });
+
+
 
 
 module.exports.isLoggedIn = (req,res,next)=>{
